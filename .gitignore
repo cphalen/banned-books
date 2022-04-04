@@ -1,5 +1,13 @@
+# macOS
 .DS_Store
+
+# generated files
 books/*
 metadata.xlsx
 ~$metadata.xlsx
 books.zip
+*.txt
+*.json
+
+# Python
+__pycache__
