@@ -30,7 +30,7 @@ def parse_name(name: str) -> dict:
     if (m := re.match(last_first_prefix_range, name)) is not None:
         # just ignore the prefix if it exists
         formatted["name"] = f"{m.group(2)} {m.group(1)}"
-        formatted["lifespan"] = m.group(3)
+        formatted["lifespan"] = m.group(4)
     elif (m := re.match(last_first_range, name)) is not None:
         formatted["name"] = f"{m.group(2)} {m.group(1)}"
         formatted["lifespan"] = m.group(3)
@@ -154,20 +154,18 @@ for i, link in enumerate(links):
     save_path = f"{target_path}/{book['Title']}.txt"
     download_link = f"{link}.txt.utf-8"
     source = requests.get(download_link)
-    with open(save_path, "w") as file:
-        text = source.content.decode("utf-8")
+    with open(save_path, "wb") as file:
+        # # assume that no book will have a title that is more than 4 lines long
+        # regex = r"\*\*\*(.*\n){0,4}.*\*\*\*"
 
-        # assume that no book will have a title that is more than 4 lines long
-        regex = r"\*\*\*(.*\n){0,4}.*\*\*\*"
-
-        # cut out the section of the txt file that is actually the story
-        # (and not the Gutenberg legal preface/addendum)
-        sections = re.split(regex, text)
-        if len(sections) >= 3:
-            content = "\n".join(
-                map(lambda x: "" if x is None else x.strip(), sections[1:-1])
-            )
-        file.write(content)
+        # # cut out the section of the txt file that is actually the story
+        # # (and not the Gutenberg legal preface/addendum)
+        # sections = re.split(regex, text)
+        # if len(sections) >= 3:
+        #     content = "\n".join(
+        #         map(lambda x: "" if x is None else x.strip(), sections[1:-1])
+        #     )
+        file.write(source.content)
 
     book["Download Link"] = f'=HYPERLINK("{download_link}")'
     book["Gutenberg Link"] = f'=HYPERLINK("{link}")'
